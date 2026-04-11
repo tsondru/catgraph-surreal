@@ -35,5 +35,5 @@ tokio = { version = "1", features = ["full", "test-util"] }
 #
 # Re-comment before pushing to keep the released artifact reproducible.
 
-[patch."https://github.com/tsondru/catgraph"]
-catgraph = { path = "../catgraph/catgraph" }
+# [patch."https://github.com/tsondru/catgraph"]
+# catgraph = { path = "../catgraph/catgraph" }
