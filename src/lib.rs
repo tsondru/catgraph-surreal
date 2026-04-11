@@ -1,14 +1,48 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+pub mod error;
+pub mod persist;
+pub mod schema;
+pub mod types;
+pub mod cospan_store;
+pub mod named_cospan_store;
+pub mod span_store;
+
+// V2 RELATE-based persistence layer
+pub mod schema_v2;
+pub mod types_v2;
+pub(crate) mod utils;
+pub mod node_store;
+pub mod edge_store;
+pub mod hyperedge;
+pub use hyperedge as hyperedge_store;
+pub mod query;
+pub mod petri_net_store;
+pub mod wiring_store;
+pub mod hypergraph_evolution_store;
+pub mod multiway_store;
+pub mod fingerprint;
+
+use surrealdb::engine::local::Db;
+use surrealdb::Surreal;
+use error::PersistError;
+
+/// Initialize the V1 catgraph persistence schema (embedded arrays).
+///
+/// # Errors
+///
+/// Returns [`PersistError::Surreal`] if the DDL execution fails.
+pub async fn init_schema(db: &Surreal<Db>) -> Result<(), PersistError> {
+    db.query(schema::SCHEMA_DDL).await?;
+    Ok(())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+/// Initialize the V2 RELATE-based graph persistence schema.
+///
+/// Can be called alongside `init_schema()` — V1 and V2 use different table names.
+///
+/// # Errors
+///
+/// Returns [`PersistError::Surreal`] if the DDL execution fails.
+pub async fn init_schema_v2(db: &Surreal<Db>) -> Result<(), PersistError> {
+    db.query(schema_v2::SCHEMA_V2_DDL).await?;
+    Ok(())
 }
