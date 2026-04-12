@@ -12,7 +12,8 @@ categories = ["database", "mathematics"]
 publish = false
 
 [dependencies]
-catgraph = { git = "https://github.com/tsondru/catgraph", tag = "v0.10.5" }
+catgraph = { git = "https://github.com/tsondru/catgraph", tag = "v0.10.6" }
+catgraph-physics = { git = "https://github.com/tsondru/catgraph", tag = "v0.10.6" }
 surrealdb = { version = "3.0.5", default-features = false, features = ["kv-mem"] }
 surrealdb-types = "3.0.5"
 serde = { version = "1", features = ["derive"] }
@@ -37,3 +38,7 @@ tokio = { version = "1", features = ["full", "test-util"] }
 
 # [patch."https://github.com/tsondru/catgraph"]
 # catgraph = { path = "../catgraph/catgraph" }
+# catgraph-physics = { path = "../catgraph/catgraph-physics" }
+#
+# Both deps use the same git tag so Cargo deduplicates the checkout.
+# When using [patch], both paths are required.

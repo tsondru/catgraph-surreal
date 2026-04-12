@@ -1,7 +1,7 @@
 use catgraph::category::Composable;
 use catgraph::cospan::Cospan;
-use catgraph::hypergraph::{Hypergraph, HypergraphEvolution, RewriteRule};
 use catgraph::span::Span;
+use catgraph_physics::hypergraph::{Hypergraph, HypergraphEvolution, RewriteRule};
 use catgraph_surreal::hypergraph_evolution_store::HypergraphEvolutionStore;
 use catgraph_surreal::init_schema_v2;
 use surrealdb::engine::local::{Db, Mem};

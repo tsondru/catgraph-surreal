@@ -29,7 +29,7 @@ use surrealdb::Surreal;
 /// Full `save`/`load` implementation is deferred until
 /// `MultiwayEvolutionGraph` serialization is available.
 ///
-/// [`MultiwayEvolutionGraph`]: catgraph::multiway::MultiwayEvolutionGraph
+/// [`MultiwayEvolutionGraph`]: catgraph_physics::multiway::MultiwayEvolutionGraph
 pub struct MultiwayEvolutionStore<'a> {
     db: &'a Surreal<Db>,
 }

@@ -4,8 +4,8 @@
 //! [`HyperedgeStore`]'s hub-node decomposition.
 
 use catgraph::cospan::Cospan;
-use catgraph::hypergraph::{HypergraphEvolution, RewriteRule};
 use catgraph::span::Span;
+use catgraph_physics::hypergraph::{HypergraphEvolution, RewriteRule};
 use surrealdb::engine::local::Db;
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
@@ -126,7 +126,7 @@ impl<'a> HypergraphEvolutionStore<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use catgraph::hypergraph::{Hypergraph, HypergraphEvolution, RewriteRule};
+    use catgraph_physics::hypergraph::{Hypergraph, HypergraphEvolution, RewriteRule};
     use surrealdb::engine::local::Mem;
 
     async fn setup_db() -> Surreal<Db> {
