@@ -21,7 +21,7 @@ use surrealdb::Surreal;
 
 use catgraph::cospan::Cospan;
 use catgraph::named_cospan::NamedCospan;
-use catgraph::wiring_diagram::{Dir, WiringDiagram};
+use catgraph_applied::wiring_diagram::{Dir, WiringDiagram};
 
 use crate::error::PersistError;
 use crate::hyperedge::HyperedgeStore;

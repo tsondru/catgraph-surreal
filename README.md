@@ -1,8 +1,8 @@
 # catgraph-surreal
 
-SurrealDB persistence layer for [catgraph](https://github.com/tsondru/catgraph).
+SurrealDB persistence layer for the [catgraph](https://github.com/tsondru/catgraph) workspace crates (`catgraph`, `catgraph-physics`, `catgraph-applied`).
 
-Persists `Cospan`, `Span`, and `NamedCospan` structures from catgraph to SurrealDB 3.0.5 via two coexisting storage layers:
+Persists `Cospan`, `Span`, `NamedCospan`, hypergraph evolution, Petri nets, and wiring diagrams to SurrealDB 3.0.5 via two coexisting storage layers:
 
 - **V1 (embedded arrays)**: each n-ary hyperedge stored as a single record with embedded arrays encoding the structural maps. O(1) reconstruction.
 - **V2 (graph-native)**: first-class nodes, pairwise `RELATE` edges, hub-node reification for n-ary hyperedges, FTS + HNSW indexes for similarity search.
@@ -51,13 +51,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ## Local development
 
-This crate depends on `catgraph` via a git tag. To work on changes that span both repos, edit `Cargo.toml` and uncomment the `[patch]` block at the bottom — this redirects the `catgraph` dep to your local workspace at `../catgraph/catgraph`.
+This crate depends on `catgraph`, `catgraph-physics`, and `catgraph-applied` via git tags (all three share the same tag for Cargo source deduplication). To work on changes that span repos, edit `Cargo.toml` and uncomment the `[patch]` block at the bottom — this redirects all three deps to your local workspace at `../catgraph/`.
 
 Re-comment the patch before pushing to keep the released artifact reproducible.
 
 ## Dependencies
 
-`catgraph`, `surrealdb` 3.0.5 (kv-mem), `surrealdb-types` 3.0.5, `serde` + `serde_json`, `tokio`, `thiserror`, `rust_decimal`
+`catgraph`, `catgraph-physics`, `catgraph-applied`, `surrealdb` 3.0.5 (kv-mem), `surrealdb-types` 3.0.5, `serde` + `serde_json`, `tokio`, `thiserror`, `rust_decimal`
 
 ## License
 

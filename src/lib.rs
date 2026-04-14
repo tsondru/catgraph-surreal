@@ -18,7 +18,6 @@ pub mod query;
 pub mod petri_net_store;
 pub mod wiring_store;
 pub mod hypergraph_evolution_store;
-pub mod multiway_store;
 pub mod fingerprint;
 
 use surrealdb::engine::local::Db;

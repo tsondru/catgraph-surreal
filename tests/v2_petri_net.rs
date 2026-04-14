@@ -2,7 +2,7 @@ use rust_decimal::Decimal;
 use surrealdb::engine::local::Mem;
 use surrealdb::Surreal;
 
-use catgraph::petri_net::{Marking, PetriNet, Transition};
+use catgraph_applied::petri_net::{Marking, PetriNet, Transition};
 use catgraph_surreal::init_schema_v2;
 use catgraph_surreal::petri_net_store::PetriNetStore;
 

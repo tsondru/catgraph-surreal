@@ -1,7 +1,7 @@
 //! Integration tests for WiringDiagramStore (V2 persistence).
 
 use catgraph::named_cospan::NamedCospan;
-use catgraph::wiring_diagram::{Dir, WiringDiagram};
+use catgraph_applied::wiring_diagram::{Dir, WiringDiagram};
 use surrealdb::engine::local::Mem;
 use surrealdb::Surreal;
 

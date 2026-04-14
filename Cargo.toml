@@ -1,6 +1,6 @@
 [package]
 name = "catgraph-surreal"
-version = "0.7.2"
+version = "0.9.0"
 edition = "2024"
 license = "MIT"
 description = "SurrealDB persistence layer for catgraph cospan/span structures"
@@ -12,8 +12,9 @@ categories = ["database", "mathematics"]
 publish = false
 
 [dependencies]
-catgraph = { git = "https://github.com/tsondru/catgraph", tag = "v0.10.6" }
-catgraph-physics = { git = "https://github.com/tsondru/catgraph", tag = "v0.10.6" }
+catgraph = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.0" }
+catgraph-physics = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.0" }
+catgraph-applied = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.0" }
 surrealdb = { version = "3.0.5", default-features = false, features = ["kv-mem"] }
 surrealdb-types = "3.0.5"
 serde = { version = "1", features = ["derive"] }
@@ -39,6 +40,14 @@ tokio = { version = "1", features = ["full", "test-util"] }
 # [patch."https://github.com/tsondru/catgraph"]
 # catgraph = { path = "../catgraph/catgraph" }
 # catgraph-physics = { path = "../catgraph/catgraph-physics" }
+# catgraph-applied = { path = "../catgraph/catgraph-applied" }
 #
-# Both deps use the same git tag so Cargo deduplicates the checkout.
-# When using [patch], both paths are required.
+# All three deps use the same git tag so Cargo deduplicates the checkout.
+# When using [patch], all three paths are required.
+
+# Phase 3.2 local-verification override (re-enable if the catgraph v0.10.7 tag
+# doesn't exist yet or while iterating locally across repos):
+# [patch."https://github.com/tsondru/catgraph"]
+# catgraph = { path = "../catgraph/catgraph" }
+# catgraph-physics = { path = "../catgraph/catgraph-physics" }
+# catgraph-applied = { path = "../catgraph/catgraph-applied" }

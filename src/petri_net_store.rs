@@ -10,7 +10,7 @@
 
 use std::collections::HashMap;
 
-use catgraph::petri_net::{Marking, PetriNet, Transition};
+use catgraph_applied::petri_net::{Marking, PetriNet, Transition};
 use rust_decimal::Decimal;
 use surrealdb::engine::local::Db;
 use surrealdb::types::RecordId;

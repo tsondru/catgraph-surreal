@@ -6,7 +6,7 @@
 //!
 //! Run with: `cargo run -p catgraph-surreal --example petri_net_persistence`
 
-use catgraph::petri_net::{Marking, PetriNet, Transition};
+use catgraph_applied::petri_net::{Marking, PetriNet, Transition};
 use catgraph_surreal::petri_net_store::PetriNetStore;
 use catgraph_surreal::init_schema_v2;
 use rust_decimal::Decimal;
