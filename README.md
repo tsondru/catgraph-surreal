@@ -55,9 +55,32 @@ This crate depends on `catgraph`, `catgraph-physics`, and `catgraph-applied` via
 
 Re-comment the patch before pushing to keep the released artifact reproducible.
 
+## WASM / edge support (v0.10.0+)
+
+The library compiles clean to `wasm32-wasip1-threads` for edge-device
+deployment under Wasmtime / Wasmer / WasmEdge / Fermyon Spin. `tokio` is
+now pulled with a trimmed feature set (`rt` + `sync` + `macros` + `time`
+only — no `signal` / `process` / `net` / `io-std` / `fs`) and the
+catgraph workspace is pinned to `v0.11.4` which gates rayon behind a
+`parallel` feature for single-threaded WASI hosts.
+
+```sh
+cargo build --lib --target wasm32-wasip1-threads -p catgraph-surreal
+```
+
+See `examples/wasi_edge_client.rs` for a minimal sidecar-pattern smoke
+test. Remote-engine generalization of the store API (so the sidecar can
+talk to a native SurrealDB over WS instead of embedded `Mem`) is
+scheduled for a follow-up patch — the stores currently type against
+`Surreal<engine::local::Db>`.
+
 ## Dependencies
 
-`catgraph`, `catgraph-physics`, `catgraph-applied`, `surrealdb` 3.0.5 (kv-mem), `surrealdb-types` 3.0.5, `serde` + `serde_json`, `tokio`, `thiserror`, `rust_decimal`
+`catgraph`, `catgraph-physics`, `catgraph-applied` (all tag `v0.11.4`, shared for Cargo source dedup), `surrealdb` 3.0.5 (kv-mem), `surrealdb-types` 3.0.5, `serde` + `serde_json`, `tokio` (trimmed to `rt`/`sync`/`macros`/`time`), `thiserror`, `rust_decimal`
+
+## Changelog
+
+See [`CHANGELOG.md`](CHANGELOG.md) for release history.
 
 ## License
 

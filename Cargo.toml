@@ -1,6 +1,6 @@
 [package]
 name = "catgraph-surreal"
-version = "0.9.0"
+version = "0.10.0"
 edition = "2024"
 license = "MIT"
 description = "SurrealDB persistence layer for catgraph cospan/span structures"
@@ -12,19 +12,30 @@ categories = ["database", "mathematics"]
 publish = false
 
 [dependencies]
-catgraph = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.0" }
-catgraph-physics = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.0" }
-catgraph-applied = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.0" }
+# All three catgraph deps share one git tag for Cargo source deduplication
+# (see workspace convention). v0.11.4 is the Phase W.1 co-release tag on
+# catgraph; catgraph-physics-v0.2.2 + catgraph-applied-v0.3.3 live at the
+# same SHA so the shared-tag pattern still works.
+catgraph = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.4" }
+catgraph-physics = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.4" }
+catgraph-applied = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.4" }
 surrealdb = { version = "3.0.5", default-features = false, features = ["kv-mem"] }
 surrealdb-types = "3.0.5"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-tokio = { version = "1", features = ["full"] }
+# Trimmed from "full" to the minimum needed for this crate: `rt` for the
+# runtime + `#[tokio::main]`, `sync` for Mutex (used transitively),
+# `macros` for `#[tokio::main]` / `#[tokio::test]`, `time` for
+# `tokio::time::sleep` in hyperedge::decompose retry backoff. Drops
+# `signal`, `process`, `net`, `io-util`, `io-std`, `fs` — none of which
+# this crate uses directly and none of which build on wasm32-wasip1-*.
+# Phase W.2 (2026-04-19).
+tokio = { version = "1", default-features = false, features = ["rt", "sync", "macros", "time"] }
 thiserror = "2"
 rust_decimal = { version = "1", features = ["serde-str"] }
 
 [dev-dependencies]
-tokio = { version = "1", features = ["full", "test-util"] }
+tokio = { version = "1", default-features = false, features = ["rt", "sync", "macros", "time", "test-util"] }
 
 # ---------------------------------------------------------------------------
 # Local development override
