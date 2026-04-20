@@ -12,7 +12,7 @@ use std::collections::HashMap;
 
 use catgraph_applied::petri_net::{Marking, PetriNet, Transition};
 use rust_decimal::Decimal;
-use surrealdb::engine::local::Db;
+use surrealdb::engine::any::Any;
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
 use surrealdb_types::SurrealValue;
@@ -35,7 +35,7 @@ use crate::utils::format_record_id;
 /// deterministic ordering regardless of `SurrealDB` query return order.
 pub struct PetriNetStore<'a> {
     /// Borrowed database connection used for all queries.
-    db: &'a Surreal<Db>,
+    db: &'a Surreal<Any>,
 }
 
 /// Deserialization helper for pre-arc query results.
@@ -69,7 +69,7 @@ struct PostArcEntry {
 
 impl<'a> PetriNetStore<'a> {
     #[must_use] 
-    pub fn new(db: &'a Surreal<Db>) -> Self {
+    pub fn new(db: &'a Surreal<Any>) -> Self {
         Self { db }
     }
 

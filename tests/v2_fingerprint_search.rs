@@ -2,11 +2,11 @@ use catgraph_surreal::{
     edge_store::EdgeStore, fingerprint::FingerprintEngine, init_schema_v2,
     node_store::NodeStore,
 };
-use surrealdb::engine::local::Mem;
+use surrealdb::engine::any::{self, Any};
 use surrealdb::Surreal;
 
-async fn setup() -> Surreal<surrealdb::engine::local::Db> {
-    let db = Surreal::new::<Mem>(()).await.unwrap();
+async fn setup() -> Surreal<Any> {
+    let db = any::connect("mem://").await.unwrap();
     db.use_ns("test").use_db("test").await.unwrap();
     init_schema_v2(&db).await.unwrap();
     db

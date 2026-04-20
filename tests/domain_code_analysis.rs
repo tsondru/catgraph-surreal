@@ -4,7 +4,7 @@
 //! relationships. Demonstrates pairwise `NodeStore` + `EdgeStore` (no hyperedges),
 //! edge properties, multi-hop traversal, and inbound queries.
 
-use surrealdb::engine::local::Mem;
+use surrealdb::engine::any::{self, Any};
 use surrealdb::Surreal;
 
 use catgraph_surreal::edge_store::EdgeStore;
@@ -12,8 +12,8 @@ use catgraph_surreal::init_schema_v2;
 use catgraph_surreal::node_store::NodeStore;
 use catgraph_surreal::query::QueryHelper;
 
-async fn setup() -> Surreal<surrealdb::engine::local::Db> {
-    let db = Surreal::new::<Mem>(()).await.unwrap();
+async fn setup() -> Surreal<Any> {
+    let db = any::connect("mem://").await.unwrap();
     db.use_ns("test").use_db("test").await.unwrap();
     init_schema_v2(&db).await.unwrap();
     db

@@ -9,13 +9,12 @@ use catgraph::category::HasIdentity;
 use catgraph::cospan::Cospan;
 use catgraph_surreal::cospan_store::CospanStore;
 use catgraph_surreal::init_schema;
-use surrealdb::engine::local::Mem;
-use surrealdb::Surreal;
+use surrealdb::engine::any;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // --- Setup ---
-    let db = Surreal::new::<Mem>(()).await?;
+    let db = any::connect("mem://").await?;
     db.use_ns("demo").use_db("demo").await?;
     init_schema(&db).await?;
     let store = CospanStore::new(&db);

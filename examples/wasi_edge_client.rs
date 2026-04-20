@@ -12,12 +12,12 @@
 //!    Surrealism `.surli` modules loaded into SurrealDB via `DEFINE MODULE`
 //!    for compute-near-data paths.
 //!
-//! This example uses the embedded `Mem` engine (the current crate default)
-//! because the remote-engine generalization of the store API is scheduled
-//! for a follow-up patch (the stores currently hardcode
-//! `Surreal<engine::local::Db>`). The calling pattern — async store +
-//! tokio runtime + cospan roundtrip — is what a real edge sidecar exercises
-//! once the remote engine lands.
+//! With v0.10.0 the stores type against `Surreal<engine::any::Any>`, so
+//! this example — and a real edge sidecar — can swap the in-memory
+//! endpoint (`"mem://"`) for a remote one (`"ws://host:8000"`) without
+//! changing any store code. The calling pattern below (async store +
+//! tokio runtime + cospan roundtrip) is exactly what the WASM sidecar
+//! exercises against a native SurrealDB over WS.
 //!
 //! ## Running
 //!
@@ -33,16 +33,15 @@ use catgraph::category::HasIdentity;
 use catgraph::cospan::Cospan;
 use catgraph_surreal::cospan_store::CospanStore;
 use catgraph_surreal::init_schema;
-use surrealdb::engine::local::Mem;
-use surrealdb::Surreal;
+use surrealdb::engine::any;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Sidecar-style setup: embedded in-memory SurrealDB. A production edge
-    // sidecar would connect via `Surreal::new::<Ws>("127.0.0.1:8000")` to a
-    // native daemon instead — see the doc comment above for the follow-up
-    // plan that exposes that path.
-    let db = Surreal::new::<Mem>(()).await?;
+    // Sidecar-style setup: embedded in-memory SurrealDB. Swap `"mem://"`
+    // for `"ws://127.0.0.1:8000"` to point at a native SurrealDB daemon
+    // instead — all stores in this crate type against `Surreal<Any>`, so
+    // no other lines in the example change.
+    let db = any::connect("mem://").await?;
     db.use_ns("edge").use_db("sidecar").await?;
     init_schema(&db).await?;
     let store = CospanStore::new(&db);

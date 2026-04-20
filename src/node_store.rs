@@ -1,4 +1,4 @@
-use surrealdb::engine::local::Db;
+use surrealdb::engine::any::Any;
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
 
@@ -7,12 +7,12 @@ use crate::types_v2::GraphNodeRecord;
 
 /// Store for first-class graph vertices in the V2 schema.
 pub struct NodeStore<'a> {
-    db: &'a Surreal<Db>,
+    db: &'a Surreal<Any>,
 }
 
 impl<'a> NodeStore<'a> {
     #[must_use] 
-    pub fn new(db: &'a Surreal<Db>) -> Self {
+    pub fn new(db: &'a Surreal<Any>) -> Self {
         Self { db }
     }
 

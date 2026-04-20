@@ -9,7 +9,7 @@
 //! Feature vector layout (padded/truncated to the configured dimension):
 //! `[out_degree, in_degree, total_degree, source_participations, target_participations, 0, ...]`
 
-use surrealdb::engine::local::Db;
+use surrealdb::engine::any::Any;
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
 use surrealdb_types::SurrealValue;
@@ -71,14 +71,14 @@ impl From<SimilarNodeHit> for (GraphNodeRecord, f64) {
 /// enables sub-linear K-nearest-neighbor queries over those embeddings.
 pub struct FingerprintEngine<'a> {
     /// Borrowed database connection used for all queries.
-    db: &'a Surreal<Db>,
+    db: &'a Surreal<Any>,
     /// Fixed dimension of the embedding vectors and HNSW index.
     dimension: u32,
 }
 
 impl<'a> FingerprintEngine<'a> {
     #[must_use] 
-    pub fn new(db: &'a Surreal<Db>, dimension: u32) -> Self {
+    pub fn new(db: &'a Surreal<Any>, dimension: u32) -> Self {
         Self { db, dimension }
     }
 

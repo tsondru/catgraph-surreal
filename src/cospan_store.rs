@@ -1,5 +1,5 @@
 use catgraph::cospan::Cospan;
-use surrealdb::engine::local::Db;
+use surrealdb::engine::any::Any;
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
 
@@ -9,12 +9,12 @@ use crate::types::CospanRecord;
 
 /// Typed store for `Cospan<Lambda>` persistence in `SurrealDB`.
 pub struct CospanStore<'a> {
-    db: &'a Surreal<Db>,
+    db: &'a Surreal<Any>,
 }
 
 impl<'a> CospanStore<'a> {
     #[must_use] 
-    pub fn new(db: &'a Surreal<Db>) -> Self {
+    pub fn new(db: &'a Surreal<Any>) -> Self {
         Self { db }
     }
 

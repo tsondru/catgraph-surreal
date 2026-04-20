@@ -1,5 +1,5 @@
 
-use surrealdb::engine::local::Db;
+use surrealdb::engine::any::Any;
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
 use surrealdb_types::SurrealValue;
@@ -20,13 +20,13 @@ pub mod reconstruct;
 /// - `source_of` RELATE edges from source nodes to the hub
 /// - `target_of` RELATE edges from the hub to target nodes
 pub struct HyperedgeStore<'a> {
-    db: &'a Surreal<Db>,
+    db: &'a Surreal<Any>,
     pub(super) node_store: NodeStore<'a>,
 }
 
 impl<'a> HyperedgeStore<'a> {
     #[must_use] 
-    pub fn new(db: &'a Surreal<Db>) -> Self {
+    pub fn new(db: &'a Surreal<Any>) -> Self {
         Self {
             db,
             node_store: NodeStore::new(db),

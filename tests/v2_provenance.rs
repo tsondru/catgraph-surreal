@@ -1,13 +1,13 @@
 use catgraph::cospan::Cospan;
-use surrealdb::engine::local::Mem;
+use surrealdb::engine::any::{self, Any};
 use surrealdb::Surreal;
 use surrealdb_types::SurrealValue;
 
 use catgraph_surreal::hyperedge_store::HyperedgeStore;
 use catgraph_surreal::init_schema_v2;
 
-async fn setup_v2() -> Surreal<surrealdb::engine::local::Db> {
-    let db = Surreal::new::<Mem>(()).await.unwrap();
+async fn setup_v2() -> Surreal<Any> {
+    let db = any::connect("mem://").await.unwrap();
     db.use_ns("test").use_db("test").await.unwrap();
     init_schema_v2(&db).await.unwrap();
     db

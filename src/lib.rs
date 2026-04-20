@@ -20,7 +20,7 @@ pub mod wiring_store;
 pub mod hypergraph_evolution_store;
 pub mod fingerprint;
 
-use surrealdb::engine::local::Db;
+use surrealdb::engine::any::Any;
 use surrealdb::Surreal;
 use error::PersistError;
 
@@ -29,7 +29,7 @@ use error::PersistError;
 /// # Errors
 ///
 /// Returns [`PersistError::Surreal`] if the DDL execution fails.
-pub async fn init_schema(db: &Surreal<Db>) -> Result<(), PersistError> {
+pub async fn init_schema(db: &Surreal<Any>) -> Result<(), PersistError> {
     db.query(schema::SCHEMA_DDL).await?;
     Ok(())
 }
@@ -41,7 +41,7 @@ pub async fn init_schema(db: &Surreal<Db>) -> Result<(), PersistError> {
 /// # Errors
 ///
 /// Returns [`PersistError::Surreal`] if the DDL execution fails.
-pub async fn init_schema_v2(db: &Surreal<Db>) -> Result<(), PersistError> {
+pub async fn init_schema_v2(db: &Surreal<Any>) -> Result<(), PersistError> {
     db.query(schema_v2::SCHEMA_V2_DDL).await?;
     Ok(())
 }

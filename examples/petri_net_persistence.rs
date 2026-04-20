@@ -10,8 +10,7 @@ use catgraph_applied::petri_net::{Marking, PetriNet, Transition};
 use catgraph_surreal::petri_net_store::PetriNetStore;
 use catgraph_surreal::init_schema_v2;
 use rust_decimal::Decimal;
-use surrealdb::engine::local::Mem;
-use surrealdb::Surreal;
+use surrealdb::engine::any;
 
 fn d(n: i64) -> Decimal {
     Decimal::from(n)
@@ -20,7 +19,7 @@ fn d(n: i64) -> Decimal {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // --- Setup ---
-    let db = Surreal::new::<Mem>(()).await?;
+    let db = any::connect("mem://").await?;
     db.use_ns("demo").use_db("demo").await?;
     init_schema_v2(&db).await?;
     let store = PetriNetStore::new(&db);

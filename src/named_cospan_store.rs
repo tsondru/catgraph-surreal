@@ -1,5 +1,5 @@
 use catgraph::named_cospan::NamedCospan;
-use surrealdb::engine::local::Db;
+use surrealdb::engine::any::Any;
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
 
@@ -13,13 +13,13 @@ use crate::types::NamedCospanRecord;
 /// Named cospans are stored as a reference to the underlying cospan record
 /// plus the port name arrays. The cospan is saved/loaded via `CospanStore`.
 pub struct NamedCospanStore<'a> {
-    db: &'a Surreal<Db>,
+    db: &'a Surreal<Any>,
     cospan_store: CospanStore<'a>,
 }
 
 impl<'a> NamedCospanStore<'a> {
     #[must_use] 
-    pub fn new(db: &'a Surreal<Db>) -> Self {
+    pub fn new(db: &'a Surreal<Any>) -> Self {
         Self {
             db,
             cospan_store: CospanStore::new(db),

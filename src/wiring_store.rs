@@ -15,7 +15,7 @@ use std::fmt::Debug;
 
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-use surrealdb::engine::local::Db;
+use surrealdb::engine::any::Any;
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
 
@@ -38,12 +38,12 @@ pub struct WiringDiagramStore<'a> {
     /// Underlying hub store used for cospan decomposition and reconstruction.
     hyperedge_store: HyperedgeStore<'a>,
     /// Borrowed database connection for direct queries (e.g., [`list`](Self::list)).
-    db: &'a Surreal<Db>,
+    db: &'a Surreal<Any>,
 }
 
 impl<'a> WiringDiagramStore<'a> {
     #[must_use] 
-    pub fn new(db: &'a Surreal<Db>) -> Self {
+    pub fn new(db: &'a Surreal<Any>) -> Self {
         Self {
             hyperedge_store: HyperedgeStore::new(db),
             db,

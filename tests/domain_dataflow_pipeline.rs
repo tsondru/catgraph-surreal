@@ -5,15 +5,15 @@
 //! `NamedCospanStore` persistence, verifying both coexist.
 
 use catgraph::named_cospan::NamedCospan;
-use surrealdb::engine::local::Mem;
+use surrealdb::engine::any::{self, Any};
 use surrealdb::Surreal;
 
 use catgraph_surreal::hyperedge_store::HyperedgeStore;
 use catgraph_surreal::named_cospan_store::NamedCospanStore;
 use catgraph_surreal::{init_schema, init_schema_v2};
 
-async fn setup_both() -> Surreal<surrealdb::engine::local::Db> {
-    let db = Surreal::new::<Mem>(()).await.unwrap();
+async fn setup_both() -> Surreal<Any> {
+    let db = any::connect("mem://").await.unwrap();
     db.use_ns("test").use_db("test").await.unwrap();
     init_schema(&db).await.unwrap();
     init_schema_v2(&db).await.unwrap();

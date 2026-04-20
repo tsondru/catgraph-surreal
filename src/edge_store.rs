@@ -1,4 +1,4 @@
-use surrealdb::engine::local::Db;
+use surrealdb::engine::any::Any;
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
 use crate::error::PersistError;
@@ -8,12 +8,12 @@ use crate::utils::IdOnly;
 
 /// Store for pairwise RELATE edges in the V2 schema.
 pub struct EdgeStore<'a> {
-    db: &'a Surreal<Db>,
+    db: &'a Surreal<Any>,
 }
 
 impl<'a> EdgeStore<'a> {
     #[must_use] 
-    pub fn new(db: &'a Surreal<Db>) -> Self {
+    pub fn new(db: &'a Surreal<Any>) -> Self {
         Self { db }
     }
 

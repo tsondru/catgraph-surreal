@@ -11,6 +11,21 @@ keywords = ["surrealdb", "category-theory", "cospan", "persistence"]
 categories = ["database", "mathematics"]
 publish = false
 
+[features]
+# Default-on — enables the embedded `kv-mem` + `kv-surrealkv` backends, so
+# `any::connect("mem://")` and `any::connect("surrealkv://path")` work.
+# Disable with `--no-default-features` on builds that only need a remote
+# client (e.g. a WASM sidecar talking to a native SurrealDB over WS).
+# See README "WASM / edge support" for the remote-client feature matrix.
+default = ["native-embedded"]
+native-embedded = ["surrealdb/kv-mem", "surrealdb/kv-surrealkv"]
+
+# Remote client transports. Opt-in so a slim native-embedded build doesn't
+# pull the rustls / tungstenite chain. Both can be combined with
+# `native-embedded` when a process wants to speak both dialects.
+remote-ws = ["surrealdb/protocol-ws"]
+remote-http = ["surrealdb/protocol-http"]
+
 [dependencies]
 # All three catgraph deps share one git tag for Cargo source deduplication
 # (see workspace convention). v0.11.4 is the Phase W.1 co-release tag on
@@ -19,7 +34,7 @@ publish = false
 catgraph = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.4" }
 catgraph-physics = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.4" }
 catgraph-applied = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.4" }
-surrealdb = { version = "3.0.5", default-features = false, features = ["kv-mem"] }
+surrealdb = { version = "3.0.5", default-features = false }
 surrealdb-types = "3.0.5"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

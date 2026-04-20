@@ -1,4 +1,4 @@
-use surrealdb::engine::local::Mem;
+use surrealdb::engine::any::{self, Any};
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
 
@@ -7,15 +7,15 @@ use catgraph_surreal::init_schema_v2;
 use catgraph_surreal::node_store::NodeStore;
 use catgraph_surreal::query::QueryHelper;
 
-async fn setup() -> Surreal<surrealdb::engine::local::Db> {
-    let db = Surreal::new::<Mem>(()).await.unwrap();
+async fn setup() -> Surreal<Any> {
+    let db = any::connect("mem://").await.unwrap();
     db.use_ns("test").use_db("test").await.unwrap();
     init_schema_v2(&db).await.unwrap();
     db
 }
 
 /// Build a linear chain: a -> b -> c -> d
-async fn build_chain(db: &Surreal<surrealdb::engine::local::Db>) -> Vec<RecordId> {
+async fn build_chain(db: &Surreal<Any>) -> Vec<RecordId> {
     let ns = NodeStore::new(db);
     let es = EdgeStore::new(db);
     let a = ns

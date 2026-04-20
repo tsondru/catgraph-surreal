@@ -4,12 +4,12 @@ use catgraph::span::Span;
 use catgraph_physics::hypergraph::{Hypergraph, HypergraphEvolution, RewriteRule};
 use catgraph_surreal::hypergraph_evolution_store::HypergraphEvolutionStore;
 use catgraph_surreal::init_schema_v2;
-use surrealdb::engine::local::{Db, Mem};
+use surrealdb::engine::any::{self, Any};
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
 
-async fn setup() -> Surreal<Db> {
-    let db = Surreal::new::<Mem>(()).await.unwrap();
+async fn setup() -> Surreal<Any> {
+    let db = any::connect("mem://").await.unwrap();
     db.use_ns("test").use_db("test").await.unwrap();
     init_schema_v2(&db).await.unwrap();
     db

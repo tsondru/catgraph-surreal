@@ -6,7 +6,7 @@
 use catgraph::cospan::Cospan;
 use catgraph::span::Span;
 use catgraph_physics::hypergraph::{HypergraphEvolution, RewriteRule};
-use surrealdb::engine::local::Db;
+use surrealdb::engine::any::Any;
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
 
@@ -26,7 +26,7 @@ impl<'a> HypergraphEvolutionStore<'a> {
     ///
     /// Requires V2 schema to be initialized (`catgraph_surreal::init_schema_v2`).
     #[must_use] 
-    pub fn new(db: &'a Surreal<Db>) -> Self {
+    pub fn new(db: &'a Surreal<Any>) -> Self {
         Self {
             store: HyperedgeStore::new(db),
         }
@@ -127,10 +127,9 @@ impl<'a> HypergraphEvolutionStore<'a> {
 mod tests {
     use super::*;
     use catgraph_physics::hypergraph::{Hypergraph, HypergraphEvolution, RewriteRule};
-    use surrealdb::engine::local::Mem;
 
-    async fn setup_db() -> Surreal<Db> {
-        let db = surrealdb::Surreal::new::<Mem>(()).await.unwrap();
+    async fn setup_db() -> Surreal<Any> {
+        let db = surrealdb::engine::any::connect("mem://").await.unwrap();
         db.use_ns("test").use_db("test").await.unwrap();
         crate::init_schema_v2(&db).await.unwrap();
         db

@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use surrealdb::engine::local::Db;
+use surrealdb::engine::any::Any;
 use surrealdb::IndexedResults;
 use surrealdb::types::RecordId;
 use surrealdb::Surreal;
@@ -18,14 +18,14 @@ use crate::utils::{InOutRef, InRef, OutRef};
 /// the same graph without interference.
 pub struct QueryHelper<'a> {
     /// Borrowed database connection used for all queries.
-    db: &'a Surreal<Db>,
+    db: &'a Surreal<Any>,
     /// Node store used to fetch full [`GraphNodeRecord`] values from IDs.
     node_store: NodeStore<'a>,
 }
 
 impl<'a> QueryHelper<'a> {
     #[must_use] 
-    pub fn new(db: &'a Surreal<Db>) -> Self {
+    pub fn new(db: &'a Surreal<Any>) -> Self {
         Self {
             db,
             node_store: NodeStore::new(db),

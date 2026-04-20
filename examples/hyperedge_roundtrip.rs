@@ -10,13 +10,12 @@ use catgraph::cospan::Cospan;
 use catgraph::named_cospan::NamedCospan;
 use catgraph_surreal::hyperedge_store::HyperedgeStore;
 use catgraph_surreal::init_schema_v2;
-use surrealdb::engine::local::Mem;
-use surrealdb::Surreal;
+use surrealdb::engine::any;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // --- Setup ---
-    let db = Surreal::new::<Mem>(()).await?;
+    let db = any::connect("mem://").await?;
     db.use_ns("demo").use_db("demo").await?;
     init_schema_v2(&db).await?;
     let store = HyperedgeStore::new(&db);

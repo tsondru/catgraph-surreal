@@ -6,30 +6,37 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this c
 
 ## [Unreleased]
 
-### Planned
+v0.10.0 is held local-only pending the next SurrealDB release — big updates to the SurrealDB SDK + Surrealism tooling are expected, and committing to a tag before they land risks rework. The WASI sidecar story (running catgraph under `wasm32-wasip1-threads` talking to a native SurrealDB over WS) is additionally blocked on the surrealdb SDK itself: 3.0.5's WASM target assumes `wasm32-unknown-unknown` + JS host (wasm-bindgen, web-sys, getrandom+wasm_js), so it does not build on WASI targets. Options when the new SDK lands: (a) if WASI is now supported upstream, no further work; (b) otherwise consider a raw WS client against the SurrealDB RPC protocol for the sidecar build only.
 
-- Remote-engine generalization of store APIs: type stores against `Surreal<C: Connection>` (or `Surreal<Any>`) so a WASM sidecar running under wasmtime can connect to a native SurrealDB daemon over `protocol-ws` / `protocol-http` instead of the current `Surreal<engine::local::Db>` embedded-only hardcode. Scheduled as a follow-up patch to the Phase W.2 WASM prep in v0.10.0.
-- `native-embedded` feature gating `kv-mem` / `kv-surrealkv` so WASM builds that only need the remote client don't pull the embedded KV stack.
+## [0.10.0] - 2026-04-19 (local-only, unreleased)
 
-## [0.10.0] - 2026-04-19
-
-Phase W.2 — WASM prep. Library compiles clean to `wasm32-wasip1-threads` and `wasm32-wasip1`; tokio features trimmed to the minimum the crate actually uses; catgraph workspace pinned to `v0.11.4` (the Phase W.1 co-release tag that introduces the `parallel` feature gate). Remote-engine API generalization is a separate follow-up — the stores still type against `Surreal<engine::local::Db>`.
+Phase W.2 — WASM prep + remote-engine generalization + embedded-backend feature gate. Library compiles clean to `wasm32-wasip1-threads` and `wasm32-wasip1`; tokio features trimmed to the minimum the crate actually uses; every store generalized from `Surreal<engine::local::Db>` to `Surreal<engine::any::Any>` so the same code works against in-memory, on-disk, WebSocket, and HTTP endpoints; `native-embedded` feature gates the embedded kv backends so a remote-client-only build (WASM sidecar) can skip pulling SurrealKV and the in-memory store. catgraph workspace pinned to `v0.11.4` (the Phase W.1 co-release tag that introduces the `parallel` feature gate).
 
 ### Added
 
-- `examples/wasi_edge_client.rs` — sidecar-pattern smoke test showing the async store workflow (cospan save → load → delete) under a trimmed tokio runtime. Runs native today; documented as the target shape for a future remote-engine WASM sidecar.
+- **`native-embedded` cargo feature** (default-on) — wires `surrealdb/kv-mem` and `surrealdb/kv-surrealkv`. Disable with `--no-default-features` on builds that only need a remote client.
+- **`remote-ws` / `remote-http` cargo features** (opt-in) — enable the `protocol-ws` / `protocol-http` client transports independently of the embedded backends. Combine with `native-embedded` when a process wants both dialects.
+- `examples/wasi_edge_client.rs` — sidecar-pattern smoke test showing the async store workflow (cospan save → load → delete) under a trimmed tokio runtime. Demonstrates the `"mem://"` ↔ `"ws://host:8000"` swap that the engine-generalization now unlocks.
 
 ### Changed
 
+- **Store API generalized to `Surreal<engine::any::Any>`.** Every store (`CospanStore`, `SpanStore`, `NamedCospanStore`, `NodeStore`, `EdgeStore`, `HyperedgeStore`, `PetriNetStore`, `WiringDiagramStore`, `HypergraphEvolutionStore`, `FingerprintEngine`, `QueryHelper`) and the two free `init_schema` / `init_schema_v2` functions now take `&Surreal<Any>`. Call sites that previously built `Surreal::new::<Mem>(())` switch to `surrealdb::engine::any::connect("mem://")`; swapping to `"ws://host:8000"` or `"surrealkv://path"` requires no other changes. **Breaking** for any external consumer that held a `Surreal<Db>` — but there are no known external consumers of this crate yet.
 - `tokio` dep moved from `features = ["full"]` to `default-features = false, features = ["rt", "sync", "macros", "time"]`. `time` retained for `tokio::time::sleep` in `hyperedge::decompose` retry backoff. `full`'s `signal`/`process`/`net`/`io-std`/`fs` bits are not used directly by this crate and don't build on `wasm32-wasip1-*`.
 - `catgraph`, `catgraph-physics`, `catgraph-applied` dep tags bumped from `v0.11.0` to `v0.11.4` (same tag across all three for Cargo source deduplication). v0.11.4 introduces the `parallel` feature across the workspace; this crate does not exercise it directly but the inherited default-on behavior preserves existing semantics.
-- `README.md` gained a "WASM / edge support" section documenting the `wasm32-wasip1-threads` build story and the pending engine-generalization follow-up.
-- `CLAUDE.md` dep list updated to reflect tokio trim + pinned catgraph tag.
+- `README.md` gained a "WASM / edge support" section documenting the `wasm32-wasip1-threads` build story and the engine-feature matrix.
+- `CLAUDE.md` dep list updated to reflect tokio trim + pinned catgraph tag + engine generalization.
+
+### Removed
+
+- `use surrealdb::engine::local::{Db, Mem}` imports from every store, test, and example. The `local` module is now only reachable through `any::connect("mem://")` / `any::connect("surrealkv://path")`.
 
 ### Verified
 
-- Native: 171 tests pass, 0 failed, 0 ignored — unchanged from v0.9.0 baseline.
-- WASM: `cargo build --lib --target wasm32-wasip1-threads` finishes clean (no new warnings).
+- Native default features: `cargo test` — **171 tests pass**, 0 failed, 0 ignored — unchanged from v0.9.0 baseline.
+- `cargo check --lib --no-default-features` (zero engine backends): builds clean. The library compiles against `Surreal<Any>` regardless of which transports are enabled.
+- `cargo check --lib --no-default-features --features remote-ws`: builds clean.
+- `cargo clippy --lib`: zero warnings.
+- WASM (native-embedded-on): `cargo build --lib --target wasm32-wasip1-threads` — verified clean under W.2 partial commit; surrealdb SDK itself blocks running the full remote-client build on WASI (SDK targets `wasm32-unknown-unknown` + JS host). Tracked in `[Unreleased]`.
 
 ## [0.9.0] - 2026-04-14
 

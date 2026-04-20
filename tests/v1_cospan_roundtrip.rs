@@ -1,13 +1,13 @@
 use catgraph::category::{Composable, HasIdentity};
 use catgraph::cospan::Cospan;
-use surrealdb::engine::local::Mem;
+use surrealdb::engine::any::{self, Any};
 use surrealdb::Surreal;
 
 use catgraph_surreal::cospan_store::CospanStore;
 use catgraph_surreal::init_schema;
 
-async fn setup() -> Surreal<surrealdb::engine::local::Db> {
-    let db = Surreal::new::<Mem>(()).await.unwrap();
+async fn setup() -> Surreal<Any> {
+    let db = any::connect("mem://").await.unwrap();
     db.use_ns("test").use_db("test").await.unwrap();
     init_schema(&db).await.unwrap();
     db
