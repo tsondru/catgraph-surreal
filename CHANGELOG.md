@@ -6,9 +6,23 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this c
 
 ## [Unreleased]
 
-v0.10.0 is held local-only pending the next SurrealDB release — big updates to the SurrealDB SDK + Surrealism tooling are expected, and committing to a tag before they land risks rework. The WASI sidecar story (running catgraph under `wasm32-wasip1-threads` talking to a native SurrealDB over WS) is additionally blocked on the surrealdb SDK itself: 3.0.5's WASM target assumes `wasm32-unknown-unknown` + JS host (wasm-bindgen, web-sys, getrandom+wasm_js), so it does not build on WASI targets. Options when the new SDK lands: (a) if WASI is now supported upstream, no further work; (b) otherwise consider a raw WS client against the SurrealDB RPC protocol for the sidecar build only.
+### Tagging strategy for v0.10.0
 
-## [0.10.0] - 2026-04-19 (local-only, unreleased)
+The v0.10.0 code is **complete and on `main`** (commits `9b1d03a` tokio-trim + `0f69dbd` engine-gen + native-embedded). No git tag has been cut yet. The gate on tagging is the next SurrealDB release:
+
+- **If the new surrealdb SDK adds WASI-native WASM support** (resolves the `wasm32-unknown-unknown` + JS-host assumption documented below) → bump the three `catgraph*` dep tags in `Cargo.toml` if relevant, verify `cargo build --target wasm32-wasip1-threads --no-default-features --features remote-ws` is clean, then tag `v0.10.0` at the resulting commit and push.
+- **If the new SDK still targets browser WASM** → add a raw WS client behind a new feature flag (e.g. `remote-ws-wasi`) against SurrealDB's RPC protocol for the sidecar build only, ship as `v0.10.1` with that addition, tag, and push.
+- **If the new SDK requires any source changes** to catgraph-surreal (API breakage, feature renames) → fold into whichever path above is chosen, bumping to `v0.10.1` if post-engine-gen code has to change.
+
+In all three cases the bump is 0.10.0 → 0.10.0 (or 0.10.1). We do not jump to 0.11.0 because the engine-generalization is additive from a consumer's perspective — `Surreal<Any>` still accepts the `mem://` endpoints tests use. The only "breaking" change was `Surreal<engine::local::Db>` → `Surreal<engine::any::Any>` in user-facing APIs, and there are no known external consumers of this crate yet.
+
+**Do not** tag v0.10.0 without the SurrealDB-release gate — if the SDK path forces code changes, we want them folded into the tagged artifact.
+
+### Upstream SurrealDB SDK WASI blocker (as of surrealdb 3.0.5)
+
+The SDK's WASM dep block (`surrealdb/Cargo.toml` lines 87–102) is hardcoded for browser WASM: `getrandom/wasm_js`, `ring/wasm32_unknown_unknown_js`, `wasm-bindgen`, `wasm-bindgen-futures`, `web-sys`, `js-sys`, `tokio-tungstenite-wasm`. None of these resolve on `wasm32-wasip1-*` — you get link errors trying to resolve `__wbindgen_*` imports. Our library still compiles on WASI targets because it only references `engine::any::Any` (transport-agnostic), but actually running a remote WS client under WASI needs either (a) upstream WASI support in the SDK, or (b) a raw WS client on our side.
+
+## [0.10.0] - 2026-04-19 (on main, untagged)
 
 Phase W.2 — WASM prep + remote-engine generalization + embedded-backend feature gate. Library compiles clean to `wasm32-wasip1-threads` and `wasm32-wasip1`; tokio features trimmed to the minimum the crate actually uses; every store generalized from `Surreal<engine::local::Db>` to `Surreal<engine::any::Any>` so the same code works against in-memory, on-disk, WebSocket, and HTTP endpoints; `native-embedded` feature gates the embedded kv backends so a remote-client-only build (WASM sidecar) can skip pulling SurrealKV and the in-memory store. catgraph workspace pinned to `v0.11.4` (the Phase W.1 co-release tag that introduces the `parallel` feature gate).
 
