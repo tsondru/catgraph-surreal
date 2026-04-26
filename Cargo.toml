@@ -1,6 +1,6 @@
 [package]
 name = "catgraph-surreal"
-version = "0.10.0"
+version = "0.10.1"
 edition = "2024"
 license = "MIT"
 description = "SurrealDB persistence layer for catgraph cospan/span structures"
@@ -28,12 +28,12 @@ remote-http = ["surrealdb/protocol-http"]
 
 [dependencies]
 # All three catgraph deps share one git tag for Cargo source deduplication
-# (see workspace convention). v0.11.4 is the Phase W.1 co-release tag on
-# catgraph; catgraph-physics-v0.2.2 + catgraph-applied-v0.3.3 live at the
+# (see workspace convention). v0.12.0 is the Corel co-release tag on
+# catgraph; catgraph-physics-v0.2.2 + catgraph-applied-v0.4.0 live at the
 # same SHA so the shared-tag pattern still works.
-catgraph = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.4" }
-catgraph-physics = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.4" }
-catgraph-applied = { git = "https://github.com/tsondru/catgraph", tag = "v0.11.4" }
+catgraph = { git = "https://github.com/tsondru/catgraph", tag = "v0.12.0" }
+catgraph-physics = { git = "https://github.com/tsondru/catgraph", tag = "v0.12.0" }
+catgraph-applied = { git = "https://github.com/tsondru/catgraph", tag = "v0.12.0" }
 surrealdb = { version = "3.0.5", default-features = false }
 surrealdb-types = "3.0.5"
 serde = { version = "1", features = ["derive"] }

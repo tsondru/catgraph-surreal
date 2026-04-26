@@ -94,7 +94,7 @@ Remote-only WASM sidecar: `--no-default-features --features remote-ws`.
 
 `tokio` is pulled with a trimmed feature set (`rt` + `sync` + `macros` +
 `time` only — no `signal` / `process` / `net` / `io-std` / `fs`). The
-catgraph workspace is pinned to `v0.11.4` which gates rayon behind a
+catgraph workspace is pinned to `v0.12.0` which gates rayon behind a
 `parallel` feature for single-threaded WASI hosts.
 
 ### Build targets
@@ -125,7 +125,7 @@ test.
 
 ## Dependencies
 
-`catgraph`, `catgraph-physics`, `catgraph-applied` (all tag `v0.11.4`, shared for Cargo source dedup), `surrealdb` 3.0.5 (engines opt-in via features — see above), `surrealdb-types` 3.0.5, `serde` + `serde_json`, `tokio` (trimmed to `rt`/`sync`/`macros`/`time`), `thiserror`, `rust_decimal`
+`catgraph`, `catgraph-physics`, `catgraph-applied` (all tag `v0.12.0`, shared for Cargo source dedup), `surrealdb` 3.0.5 (engines opt-in via features — see above), `surrealdb-types` 3.0.5, `serde` + `serde_json`, `tokio` (trimmed to `rt`/`sync`/`macros`/`time`), `thiserror`, `rust_decimal`
 
 ## Changelog
 

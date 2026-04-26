@@ -23,9 +23,9 @@ This crate depends on three sibling crates in the catgraph workspace (`catgraph`
 
 ## Dependencies
 
-- `catgraph` (git tag `v0.11.4`) — F&S core (cospans, spans)
-- `catgraph-physics` (git tag `v0.11.4`) — hypergraph evolution, gauge theory
-- `catgraph-applied` (git tag `v0.11.4`) — Petri nets, wiring diagrams
+- `catgraph` (git tag `v0.12.0`) — F&S core (cospans, spans)
+- `catgraph-physics` (git tag `v0.12.0`) — hypergraph evolution, gauge theory
+- `catgraph-applied` (git tag `v0.12.0`) — Petri nets, wiring diagrams
 - `surrealdb` 3.0.5 — engines are feature-gated; see "WASM / edge support" below
 - `surrealdb-types` 3.0.5
 - `serde` + `serde_json`
